@@ -15,14 +15,14 @@ const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 const app = express();
 app.use(express.json());
 
-app.use('/api/auth', authRoutes)
+app.use('/api/v1/auth', authRoutes)
 
-app.use('/api/user', userRoutes)
-app.use('/api/user/:id/follow', authMiddleware, followRoutes)
+app.use('/api/v1/user', userRoutes)
+app.use('/api/v1/user/:id/follow', authMiddleware, followRoutes)
 
-app.use('/api/post', postRoutes)
-app.use('/api/post/:id/like', authMiddleware, likeRoutes)
-app.use('/api/post/:id/comments', authMiddleware, commentRoutes)
+app.use('/api/v1/post', postRoutes)
+app.use('/api/v1/post/:id/like', authMiddleware, likeRoutes)
+app.use('/api/v1/post/:id/comments', authMiddleware, commentRoutes)
 
 
 app.listen(port, host, () => {

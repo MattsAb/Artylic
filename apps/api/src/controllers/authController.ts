@@ -12,14 +12,25 @@ const generateToken = (user: { id: number, email: string }) => jwt.sign(
 
 export async function registerUser  (req: Request, res: Response) {
     const { email, username, password } = req.body
-    const hashed = await bcrypt.hash(password, 10)
     try {
+        const searchedUser = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+        if (searchedUser)
+        {
+            return res.status(400).json({ message: 'Email already taken' })
+        }
+
+        const hashed = await bcrypt.hash(password, 10)
+        
         const user = await prisma.user.create({
             data: { email, username, password: hashed, provider: 'local' }
         })
-        res.status(201).json({ token: generateToken(user) })
+        return res.status(201).json({ token: generateToken(user) })
     } catch (err) {
-        res.status(400).json({ message: 'Email or username already taken' })
+        return res.status(500).json({ message: 'Internal server error' })
     }
 }
 
@@ -27,13 +38,13 @@ export async function loginUser (req: Request, res: Response) {
     const { email, password } = req.body
     const user = await prisma.user.findUnique({ where: { email } })
     if (!user || !user.password)
-        return res.status(401).json({ message: 'Invalid credentials' })
+        return res.status(401).json({ message: 'User not found' })
 
     const valid = await bcrypt.compare(password, user.password)
     if (!valid)
         return res.status(401).json({ message: 'Invalid credentials' })
 
-    return res.status(201).json({ token: generateToken(user) })
+    return res.status(200).json({ token: generateToken(user) })
 }
 
 export function googleAuth () { 
