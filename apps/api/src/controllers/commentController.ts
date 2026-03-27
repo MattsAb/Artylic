@@ -24,20 +24,23 @@ export async function createComment (req: Request, res: Response) {
     }
 }
 
-export async function deleteComment (req: Request, res: Response) {
-    
-    const commentId = Number(req.params.commentId);
+export async function deleteComment(req: Request, res: Response) {
+    const commentId = Number(req.params.commentId)
+    const userId = req.user!.id
 
     try {
-        const comment = await prisma.comment.delete({
+        const comment = await prisma.comment.deleteMany({
             where: {
-                id: commentId
+                id: commentId,
+                userId: userId
             }
         })
 
-       return res.status(201).json({success: true, comment}) 
-    } catch (err)
-    {
+        if (comment.count === 0)
+            return res.status(403).json({ success: false, message: 'Forbidden' })
+
+        return res.status(200).json({ success: true })
+    } catch (err) {
         return res.status(500).json({ success: false, message: 'Internal server error' })
     }
 }
