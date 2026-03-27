@@ -30,6 +30,12 @@ export async function getPost(req: Request, res: Response) {
                 comments: true
             }
         })
+
+        if (!post)
+        {
+            return res.status(404).json({success: false, message: 'Post not found'})
+        }
+
         return res.status(200).json({success: true, post})
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Internal server error' })
@@ -37,13 +43,21 @@ export async function getPost(req: Request, res: Response) {
 }
 
 export async function deletePost(req: Request, res: Response) {
-    const postId = Number(req.params.id);
+    const postId = Number(req.params.id)
+    const userId = req.user!.id
 
     try {
-        await prisma.post.delete({
-            where: {id: postId},
+        const result = await prisma.post.deleteMany({
+            where: {
+                id: postId,
+                userId: userId
+            }
         })
-        return res.status(200).json({success: true})
+
+        if (result.count === 0)
+            return res.status(403).json({ success: false, message: 'Forbidden' })
+
+        return res.status(200).json({ success: true })
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Internal server error' })
     }
@@ -57,6 +71,11 @@ export async function getFeed(req: Request, res: Response) {
             where: { followerId: userId },
             select: { followedId: true }
         })
+
+        if (!following)
+        {
+            return res.status(200).json({success: true, posts: []})
+        }
 
         const followingIds = following.map(f => f.followedId)
 
