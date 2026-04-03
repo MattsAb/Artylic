@@ -47,6 +47,23 @@ export async function loginUser (req: Request, res: Response) {
     return res.status(200).json({ token: generateToken(user) })
 }
 
+export async function deleteUser (req: Request, res: Response) {
+
+    const userId = req.user!.id;
+
+    try {
+        await prisma.user.delete({
+            where: { id: userId }
+        })
+
+        return res.status(200).json({success: true});
+        
+    } catch (err) {
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+
 export function googleAuth () { 
     passport.authenticate('google', { session: false, failureRedirect: '/login' }),
     (req: Request, res: Response) => {

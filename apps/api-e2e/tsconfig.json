@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "types": ["jest", "node"],
     "outDir": "out-tsc/@artylic/api-e2e",
     "esModuleInterop": true,
     "noUnusedLocals": false,

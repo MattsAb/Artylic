@@ -9,6 +9,7 @@ import commentRoutes from './routes/commentRoutes'
 import userRoutes from './routes/userRoutes'
 import { authMiddleware } from './middleware/authMIddleware';
 
+
 const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
@@ -24,6 +25,9 @@ app.use('/api/v1/post', postRoutes)
 app.use('/api/v1/post/:id/like', authMiddleware, likeRoutes)
 app.use('/api/v1/post/:id/comments', authMiddleware, commentRoutes)
 
+app.use((req, res) => {
+  res.status(200).json("nothing here");
+});
 
 app.listen(port, host, () => {
     console.log(`[ ready ] http://${host}:${port}`);
