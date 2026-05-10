@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { login } from "@artylic/api-client";
+import { login, register } from "@artylic/api-client";
+import { useAuthStore } from "@artylic/api-client";
 
 import GoogleButton from "./simple_components/googleSIgnIn/GoogleButton";
+import ErrorMessageComponent from "./simple_components/ErrorMessageComponent";
 
 type SignInModalProps = {
     open: boolean
@@ -10,11 +12,39 @@ type SignInModalProps = {
 
 function SignInModal({open, onClose}: SignInModalProps) {
 
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isSigned, setIsSigned] = useState(true);
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
+    const { setAuth } = useAuthStore()
 
     if (!open) return null
 
-    const [isSigned, setIsSigned] = useState(true);
+    async function handleLogin () {
+
+        let result;
+        if (isSigned) {
+            result = await login({ email, password })
+        }
+        else
+        {
+            result = await register({username, email, password})
+        }
+
+        if (result.success && result.data) {
+            console.log(result.data.user)
+            setAuth(result.data.user, result.data.token);
+            onClose();
+        } else {
+            if (result.error)
+            {
+                console.log(result.error)
+                setErrorMessage(result.error)
+            }
+        }
+    }
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -29,23 +59,32 @@ function SignInModal({open, onClose}: SignInModalProps) {
 
             {
                 !isSigned && <input
-                type="username"
-                placeholder="Username"
-                className="w-full px-4 py-2 border rounded-lg mb-3 dark:border-slate-700" 
+                    type="username"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(v) => setUsername(v.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg mb-3 dark:border-slate-700" 
                 />
             }
 
             <input
-            type="email"
-            placeholder="Email"
-            className="w-full px-4 py-2 border rounded-lg mb-3 border-slate-700"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(v) => setEmail(v.target.value)}
+                className="w-full px-4 py-2 border rounded-lg mb-3 border-slate-700"
             />
             
             <input
-            type="password"
-            placeholder="Password"
-            className="w-full px-4 py-2 border rounded-lg mb-6 border-slate-700" 
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(v) => setPassword(v.target.value)}
+                className="w-full px-4 py-2 border rounded-lg mb-6 border-slate-700" 
             />
+
+            <ErrorMessageComponent message={errorMessage}/>
+            
             <div className="w-full flex justify-end items-center">
                 <GoogleButton/>
             </div>
@@ -58,7 +97,7 @@ function SignInModal({open, onClose}: SignInModalProps) {
             </button>
             <button 
                 className="w-full bg-sky-500 active:bg-sky-400 text-white py-2 rounded-lg font-medium cursor-pointer"
-                onClick={() => login()}
+                onClick={() => handleLogin()}
             >
                 {isSigned ? "Log in" : "Sign in"}
             </button>

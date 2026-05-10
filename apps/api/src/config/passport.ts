@@ -6,7 +6,7 @@ import { prisma } from './prisma.js'
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID as string,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    callbackURL: '/auth/google/callback'
+    callbackURL: '/api/v1/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         
@@ -54,5 +54,18 @@ passport.use(new JwtStrategy({
         return done(err, false)
     }
 }))
+
+passport.serializeUser((user: any, done) => {
+    done(null, user.id)
+})
+
+passport.deserializeUser(async (id: number, done) => {
+    try {
+        const user = await prisma.user.findUnique({ where: { id } })
+        done(null, user)
+    } catch (err) {
+        done(err)
+    }
+})
 
 export default passport

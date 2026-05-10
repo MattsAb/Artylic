@@ -2,11 +2,17 @@ import { useState } from "react"
 import SignInModal from "./SignInModal"
 import { useNavigate } from "react-router-dom";
 import { MagnifyingGlassIcon } from '@heroicons/react/16/solid';
+import { useAuthStore } from "@artylic/api-client";
+import defaultICon from '../assets/icons8-male-user-30.png';
+import HeaderOptionsComponent from "./simple_components/HeaderOptionsComponent";
 
 function Header() {
 
     const [open, setOpen] = useState(false);
+    const [openOptions, setOpenOptions] = useState(false);
+    
     const navigate = useNavigate();
+    const { isAuthenticated, user } = useAuthStore()
 
     const goBack = () => navigate('/');
     const goToCreate = () => navigate('/create');
@@ -32,17 +38,26 @@ function Header() {
         </div>
 
         <div className="flex w-full items-center justify-end mr-5 gap-5">
-            <button
-                className="font-bold cursor-pointer"
-                onClick={() => goToCreate()}
-            > Create </button>
+
             
-            <button 
+            { !isAuthenticated ? ( <button 
             className="font-bold cursor-pointer"
             onClick={() => setOpen(true)}
-            > Sign In </button>                                          {/* implent Sign In button */}
+            > Sign In </button> ) : (
+            <> 
+                <button
+                className="font-bold cursor-pointer"
+                onClick={() => goToCreate()}
+                > Create </button>
 
-            <div className="rounded-full bg-slate-500 p-5 items-center"> </div> {/* implent user profile picture */}
+                <button className="rounded-full p-1 bg-white items-center cursor-pointer"
+                    onClick={() => setOpenOptions(!openOptions)}
+                >
+                    <img src={user?.avatarUrl ? user.avatarUrl : defaultICon}/>
+                </button>
+                <HeaderOptionsComponent open={openOptions}/>
+            </>
+            )}
         </div>
             <SignInModal open={open} onClose={() => setOpen(false)}/>
     </div>

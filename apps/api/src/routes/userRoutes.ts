@@ -7,5 +7,4 @@ const router = Router()
 router.get('/:id', getProfile)
 router.put('/:id',authMiddleware, updateProfile)
 
-
 export default router

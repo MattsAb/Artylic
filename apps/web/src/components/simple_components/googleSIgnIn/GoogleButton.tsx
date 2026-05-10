@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import googleDark from "../../../assets/web_dark_rd_SU.svg";
 import googleLight from "../../../assets/web_light_rd_SU.svg";
+import { googleAuth } from "@artylic/api-client";
 
 function GoogleButton() {
   const [isLight, setIsLight] = useState(
@@ -14,8 +15,15 @@ function GoogleButton() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
+  async function handleLogin () {
+    await googleAuth();
+  }
+
   return (
-    <button className="">
+    <button
+      className="cursor-pointer"
+      onClick={() => handleLogin()}
+    >
       <img src={isLight ? googleLight : googleDark} alt="Sign in with Google" />
     </button>
   );

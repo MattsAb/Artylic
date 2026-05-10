@@ -28,7 +28,7 @@ export async function registerUser  (req: Request, res: Response) {
         const user = await prisma.user.create({
             data: { email, username, password: hashed, provider: 'local' }
         })
-        return res.status(201).json({ token: generateToken(user) })
+        return res.status(201).json({user, token: generateToken(user) })
     } catch (err) {
         return res.status(500).json({ message: 'Internal server error' })
     }
@@ -44,7 +44,7 @@ export async function loginUser (req: Request, res: Response) {
     if (!valid)
         return res.status(401).json({ message: 'Invalid credentials' })
 
-    return res.status(200).json({ token: generateToken(user) })
+    return res.status(200).json({user, token: generateToken(user)})
 }
 
 export function googleAuth () { 
@@ -53,3 +53,26 @@ export function googleAuth () {
         const token = generateToken(req.user as { id: number, email: string })
         res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`)
     }}
+
+    export async function checkAuth (req: Request, res: Response) {
+
+        const userId = req.user!.id;
+    try {
+            const user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        if (!user) {
+            return res.status(401).json({success: false});
+        }
+
+        return res.status(200).json({success: true, user})
+
+
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({success: false, msg: 'internal server error'})
+    }
+}

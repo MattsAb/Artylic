@@ -16,16 +16,10 @@ export async function getProfile(req: Request, res: Response) {
                 createdAt: true,
                 posts: {
                     orderBy: { createdAt: 'desc' },
-                    include: {
-                        _count: {
-                            select: { likes: true, comments: true }
-                        }
-                    }
                 },
                 _count: {
                     select: {
                         followers: true,
-                        following: true,
                         posts: true
                     }
                 }
@@ -35,7 +29,7 @@ export async function getProfile(req: Request, res: Response) {
         if (!profile)
             return res.status(404).json({ success: false, message: 'User not found' })
 
-        return res.status(200).json({ success: true, profile })
+        return res.status(200).json({success: true, data: profile})
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Internal server error' })
     }
