@@ -9,6 +9,7 @@ import likeRoutes from './routes/likeRoutes'
 import commentRoutes from './routes/commentRoutes'
 import userRoutes from './routes/userRoutes'
 import { authMiddleware } from './middleware/authMIddleware';
+import errorHandler from './middleware/errorMiddleware';
 
 const app = express();
 
@@ -24,5 +25,7 @@ app.use('/api/v1/user/:id/follow', authMiddleware, followRoutes)
 app.use('/api/v1/post', postRoutes)
 app.use('/api/v1/post/:id/like', authMiddleware, likeRoutes)
 app.use('/api/v1/post/:id/comments', authMiddleware, commentRoutes)
+
+app.use(errorHandler);
 
 export default app;

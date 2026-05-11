@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { prisma } from '../config/prisma'
 import passport from 'passport'
+import { ApiError } from '../types/errorTypes'
 
 const generateToken = (user: { id: number, email: string }) => jwt.sign(
     { id: user.id, email: user.email },
@@ -12,37 +13,35 @@ const generateToken = (user: { id: number, email: string }) => jwt.sign(
 
 export async function registerUser  (req: Request, res: Response) {
     const { email, username, password } = req.body
-    try {
+
         const searchedUser = await prisma.user.findUnique({
             where: {
                 email: email
             }
         })
-        if (searchedUser)
-        {
-            return res.status(400).json({ message: 'Email already taken' })
-        }
+
+        if (searchedUser) throw new ApiError(400, 'Email already taken')
 
         const hashed = await bcrypt.hash(password, 10)
         
         const user = await prisma.user.create({
             data: { email, username, password: hashed, provider: 'local' }
         })
+
         return res.status(201).json({user, token: generateToken(user) })
-    } catch (err) {
-        return res.status(500).json({ message: 'Internal server error' })
-    }
 }
 
 export async function loginUser (req: Request, res: Response) {
+
     const { email, password } = req.body
+
     const user = await prisma.user.findUnique({ where: { email } })
-    if (!user || !user.password)
-        return res.status(401).json({ message: 'User not found' })
+
+    if (!user || !user.password) throw new ApiError(404, 'User not found');
 
     const valid = await bcrypt.compare(password, user.password)
-    if (!valid)
-        return res.status(401).json({ message: 'Invalid credentials' })
+
+    if (!valid) throw new ApiError(401, 'Invalid credentails')
 
     return res.status(200).json({user, token: generateToken(user)})
 }
@@ -57,22 +56,14 @@ export function googleAuth () {
     export async function checkAuth (req: Request, res: Response) {
 
         const userId = req.user!.id;
-    try {
-            const user = await prisma.user.findUnique({
+
+        const user = await prisma.user.findUnique({
             where: {
                 id: userId
             }
         })
 
-        if (!user) {
-            return res.status(401).json({success: false});
-        }
+        if (!user) throw new ApiError(401, 'Not authenticated')
 
         return res.status(200).json({success: true, user})
-
-
-    } catch (err) {
-        console.error(err)
-        return res.status(500).json({success: false, msg: 'internal server error'})
     }
-}
