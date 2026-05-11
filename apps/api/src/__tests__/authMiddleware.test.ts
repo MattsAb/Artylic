@@ -34,9 +34,9 @@ describe('authMiddleware', () => {
 
         authMiddleware(mockRequest, mockResponse as Response, mockNext)
 
-        expect(mockResponse.status).toHaveBeenCalledWith(401)
-        expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Unauthorized' })
-        expect(mockNext).not.toHaveBeenCalled()
+
+        expect(mockNext).toHaveBeenCalledWith(
+            expect.objectContaining({ statusCode: 401, message: 'Unauthorized' }))
     })
 
     test('should call next if authenticated', () => {

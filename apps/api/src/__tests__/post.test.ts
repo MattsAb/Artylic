@@ -73,11 +73,10 @@ describe('getPost', () => {
     test('should return status 404 and an error message', async () => {
         (prisma.post.findUnique as jest.Mock).mockResolvedValue(null);
 
-        await getPost(mockRequest, mockResponse as Response)
+        await expect(getPost(mockRequest, mockResponse as Response)).rejects
+        .toThrow(expect.objectContaining({ statusCode: 404, message: 'Post not found' }))
 
         expect(prisma.post.findUnique).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(404);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: false, message: 'Post not found' });
     })
 })
 
@@ -95,11 +94,10 @@ describe('deletePost', () => {
     test('should return status 403 and an error message', async () => {
         (prisma.post.deleteMany as jest.Mock).mockResolvedValue({count: 0});
 
-        await deletePost(mockRequest, mockResponse as Response)
+        await expect(deletePost(mockRequest, mockResponse as Response)).rejects
+        .toThrow(expect.objectContaining({ statusCode: 403, message: 'Forbidden' }))
 
         expect(prisma.post.deleteMany).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(403);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: false, message: 'Forbidden'});
     })
 
 })

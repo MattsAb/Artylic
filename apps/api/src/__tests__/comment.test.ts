@@ -65,11 +65,10 @@ describe('deleteComment', () => {
     test('should return status 403 and an error message', async () => {
         (prisma.comment.deleteMany as jest.Mock).mockResolvedValue({count: 0});
 
-        await deleteComment(mockRequest, mockResponse as Response)
+        await expect(deleteComment(mockRequest, mockResponse as Response)).rejects
+        .toThrow(expect.objectContaining({ statusCode: 403, message: 'Forbidden' }))
 
         expect(prisma.comment.deleteMany).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(403);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: false, message: 'Forbidden' });
     })
 
 })

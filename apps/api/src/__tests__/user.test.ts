@@ -56,17 +56,16 @@ describe('getProfile', () => {
 
         expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
         expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, profile });
+        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: profile});
     })
 
     test('should return status 404 and an error message', async () => {
         (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-        await getProfile(mockRequest, mockResponse as Response)
+        await expect(getProfile(mockRequest, mockResponse as Response)).rejects
+        .toThrow(expect.objectContaining({ statusCode: 404, message: 'User not found' }))
 
         expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(404);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: false, message: 'User not found'  });
     })
 })
 

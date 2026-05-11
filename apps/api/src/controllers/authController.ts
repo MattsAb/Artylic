@@ -41,7 +41,7 @@ export async function loginUser (req: Request, res: Response) {
 
     const valid = await bcrypt.compare(password, user.password)
 
-    if (!valid) throw new ApiError(401, 'Invalid credentails')
+    if (!valid) throw new ApiError(401, 'Invalid credentials')
 
     return res.status(200).json({user, token: generateToken(user)})
 }
