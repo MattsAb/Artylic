@@ -47,7 +47,7 @@ describe('createComment', () => {
 
         expect(prisma.comment.create).toHaveBeenCalledTimes(1);
         expect(mockResponse.status).toHaveBeenCalledWith(201);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, comment});
+        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: comment});
     })
 
 })

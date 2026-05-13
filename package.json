@@ -5,7 +5,7 @@
     "apps/api",
     "apps/web",
     "apps/mobile",
-    "packages/ui",
+    "packages/shared_logic",
     "packages/types",
     "packages/api-client"
   ],

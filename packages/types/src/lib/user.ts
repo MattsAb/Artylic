@@ -1,4 +1,3 @@
-import { Post } from "./post"
 
 export interface User {
     id: number
@@ -8,18 +7,6 @@ export interface User {
     avatarUrl?: string | null
     provider: string
     createdAt: string
-}
-
-export interface Profile {
-    user: User
-    posts: Post[]
-    followers: number
-}
-
-export interface ProfileUser {
-    username: string
-    avatarUrl?: string
-    bio?: string
 }
 
 export interface UpdateUserDto {

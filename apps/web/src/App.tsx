@@ -6,6 +6,7 @@ import UserProfile from "./pages/UserProfile"
 import CreatePostPage from "./pages/CreatePostPage"
 import { useEffect, useState } from "react"
 import { check, getMe, useAuthStore } from "@artylic/api-client"
+import EditProfile from "./pages/EditProfile"
 
 function App() {
   
@@ -52,10 +53,11 @@ useEffect(() => {
       <div className="pt-18 min-h-screen dark:bg-mist-900 text-black dark:text-white">
 
         <Routes>
-          <Route path="/" element={<Dashboard/>}/>
-          <Route path="/post/:id" element={<PostPage/>}/>
-          <Route path="/profile/:id" element={<UserProfile/>}/>
-          <Route path="/create" element={<CreatePostPage/>}/>
+            <Route path="/" element={<Dashboard/>}/>
+            <Route path="/post/:id" element={<PostPage/>}/>
+            <Route path="/profile/:id" element={<UserProfile/>}/>
+            <Route path="/profile/edit" element={<EditProfile/>}/>
+            <Route path="/create" element={<CreatePostPage/>}/>
         </Routes>
         
       </div>

@@ -8,5 +8,5 @@ export function handleError(err: unknown): ApiResponse<never> {
             error: err.response?.data?.message ?? 'Something went wrong'
         }
     }
-    return { success: false, error: 'Something went wrong' }
+    return { success: false, error: 'Something went wrong'}
 }

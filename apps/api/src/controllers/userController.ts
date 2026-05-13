@@ -46,12 +46,14 @@ export async function getProfile(req: Request, res: Response) {
 export async function updateProfile(req: Request, res: Response) {
     const userId = req.user!.id
     const body: UpdateUserDto = req.body
+    const file = req.file as Express.MulterS3.File | undefined
+    console.log('hey')
 
     const profile = await prisma.user.update({
         where: { id: userId },
         data: {
-            bio: body.bio,
-            avatarUrl: body.avatarUrl
+            ...(body.bio !== undefined && { bio: body.bio }),
+            ...(file && { avatarUrl: file.location }),
         },
         select: {
             id: true,
@@ -61,6 +63,6 @@ export async function updateProfile(req: Request, res: Response) {
             createdAt: true
         }
     })
-    return res.status(200).json({ success: true, profile })
 
+    return res.status(200).json({ success: true, data: profile })
 }

@@ -1,13 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import SimpleButton from "../components/simple_components/SimpleButton";
-import { createPost } from "@artylic/api-client";
+import { createPost, useAuthStore } from "@artylic/api-client";
 import ErrorMessageComponent from "../components/simple_components/ErrorMessageComponent";
+import { useNavigate } from "react-router-dom";
 
 function CreatePostPage () {
 
     const [imageFile, setImageFile] = useState<File | null>(null)
     const [description, setDescrition] = useState('');
+    const [preview, setPreview] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const {user} = useAuthStore();
+
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const navigate = useNavigate();
 
     async function handleSubmit() {
         if (!imageFile) {
@@ -15,10 +21,18 @@ function CreatePostPage () {
             return;
         }
         const result = await createPost(description, imageFile);
-        if (result.success && result.data) {
-            console.log('it worked I guess');
+        if (result.success) {
+            navigate(`/profile/${user?.id}`)
         } else if (result.error) {
             setErrorMessage(result.error)
+        }
+    }
+
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0] ?? null
+        setImageFile(file)
+        if (file) {
+            setPreview(URL.createObjectURL(file))
         }
     }
 
@@ -27,17 +41,19 @@ function CreatePostPage () {
             <div className="dark:bg-mist-800 mx-18 w-1/2 rounded-2xl p-10 flex flex-col gap-10">
                 <h1 className="font-bold text-2xl"> Create your post </h1>
                     <div className="flex flex-col mt-10 gap-5">
-                        <h2 className="text-xl"> Add image </h2>
                           <>
                             <input
+                                ref={fileInputRef}
+                                className="hidden"
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                                onChange={handleFileChange}
                             />
-                            <label htmlFor="upload" className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded">
-                            Upload Photo
-                            </label>
-                            {imageFile && <img src={imageFile.name} className="w-full object-contain max-h-150" />}
+                            <button
+                                className="bg-blue-500 active:bg-blue-400 py-3 self-start px-4 rounded-xl cursor-pointer"
+                                onClick={() => fileInputRef.current?.click()}
+                            > Upload image </button>
+                            {imageFile && <img src={preview} className="w-full object-contain max-h-150" />}
                         </>
                     </div>
                     <div className="">

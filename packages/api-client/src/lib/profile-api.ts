@@ -1,5 +1,5 @@
 
-import type {ApiResponse, Profile} from "@artylic/types"
+import type {ApiResponse, Profile, User} from "@artylic/types"
 import { handleError } from "./utils/handleError"
 import api from "./config/axios";
 
@@ -13,4 +13,20 @@ export async function getUserProfile (id: string): Promise<ApiResponse<Profile>>
         return handleError(err);
     }
 
+}
+export async function editUserProfile(bio: string, imageFile?: File): Promise<ApiResponse<User>> {
+    try {
+        const formData = new FormData()
+        formData.append('bio', bio)
+        if (imageFile) {
+            formData.append('image', imageFile)
+        }
+
+        const response = await api.put<ApiResponse<User>>(`/v1/user`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        return response.data
+    } catch (err) {
+        return handleError(err)
+    }
 }

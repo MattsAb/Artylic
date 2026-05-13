@@ -12,14 +12,21 @@ function HeaderOptionsComponent ({open}: headerOptionsProps) {
 
     if (!open) return null;
     
-    const goToProfile = () => navigate(`profile/${user?.id}`)
+    const goToProfile = () => navigate(`profile/${user?.id}`);
+    const goToEditProfile = () => navigate('profile/edit');
 
     return (
-        <div className="absolute top-14 right-4 w-64 dark:bg-mist-800 py-3 px-5 rounded-xl z-50 flex flex-col">
+        <div className="absolute top-14 right-4 w-64 dark:bg-mist-800 py-3 px-5 rounded-xl z-50 flex flex-col shadow-2xl">
             <button 
                 className="hover:dark:bg-mist-700 text-left p-2 rounded-xl cursor-pointer"
                 onClick={() => goToProfile()}
                 > Profile </button>
+
+            <button 
+                className="hover:dark:bg-mist-700 text-left p-2 rounded-xl cursor-pointer"
+                onClick={() => goToEditProfile()}
+            > Edit Profile </button>
+            
             <button 
                 className="hover:dark:bg-mist-700 text-left p-2 rounded-xl cursor-pointer mt-5"
                 onClick={() => clearAuth()}
