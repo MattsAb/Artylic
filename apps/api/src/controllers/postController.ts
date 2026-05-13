@@ -5,32 +5,49 @@ import { ApiError } from '../types/errorTypes'
 
 export async function createPost(req: Request, res: Response) {
     const body: CreatePostDto = req.body
+    const file = req.file as Express.MulterS3.File
     const userId = req.user!.id
 
     const post = await prisma.post.create({
         data: {
-            photoUrl: body.photoUrl,
+            photoUrl: file.location,
             description: body.description,
             userId
         }
     })
+
     return res.status(201).json({ success: true, post })
 }
 
 export async function getPost(req: Request, res: Response) {
     const postId = Number(req.params.id);
+    const userId = req.user!.id;
 
 
     const post = await prisma.post.findUnique({
-        where: {id: postId},
+        where: { id: postId },
         include: {
-            comments: true
+            user: true,
+            comments: {
+                include: {
+                    user: {
+                        select: { id: true, username: true, avatarUrl: true }
+                    }
+                }
+            },
+            _count: {
+                select: { likes: true, comments: true }
+            },
+            likes: {
+            where: { userId },
+            select: { userId: true }
+        },
         }
     })
 
     if (!post) throw new ApiError(404, 'Post not found');
 
-    return res.status(200).json({success: true, post})
+    return res.status(200).json({success: true, data: post})
 
 }
 
@@ -60,7 +77,7 @@ export async function getFeed(req: Request, res: Response) {
 
     if (!following)
     {
-        return res.status(200).json({success: true, posts: []})
+        return res.status(200).json({success: true, data: []})
     }
 
     const followingIds = following.map(f => f.followedId)
@@ -88,6 +105,6 @@ export async function getFeed(req: Request, res: Response) {
         take: 20,
     })
 
-    return res.status(200).json({ success: true, posts })
+    return res.status(200).json({ success: true, data: posts })
 
 }

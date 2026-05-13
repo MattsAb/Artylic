@@ -4,10 +4,11 @@ import { UpdateUserDto } from '@artylic/types'
 import { ApiError } from '../types/errorTypes'
 
 export async function getProfile(req: Request, res: Response) {
-    const userId = Number(req.params.id)
+    const profileId = Number(req.params.id);
+    const userId = req.user?.id;
 
     const profile = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { id: profileId },
         select: {
             id: true,
             username: true,
@@ -15,6 +16,12 @@ export async function getProfile(req: Request, res: Response) {
             avatarUrl: true,
             createdAt: true,
             posts: {
+                include: {
+                    user: true,
+                    _count: {
+                        select: {likes: true}
+                    }
+                },
                 orderBy: { createdAt: 'desc' },
             },
             _count: {
@@ -22,7 +29,11 @@ export async function getProfile(req: Request, res: Response) {
                     followers: true,
                     posts: true
                 }
-            }
+            },
+            followers: {
+            where: { followerId: userId },
+            select: { followerId: true }
+        },
         }
     })
 

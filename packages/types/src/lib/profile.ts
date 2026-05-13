@@ -1,4 +1,4 @@
-import { Post } from "./post"
+import type { Post } from "./post"
 
 export interface Profile {
     username: string
@@ -6,6 +6,7 @@ export interface Profile {
     bio?: string
     avatarUrl: string
     createdAt: string
+    followers: number[]
     posts: Post[]
     _count: {
         posts: number

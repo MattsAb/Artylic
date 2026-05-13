@@ -12,7 +12,7 @@ function Header() {
     const [openOptions, setOpenOptions] = useState(false);
     
     const navigate = useNavigate();
-    const { isAuthenticated, user } = useAuthStore()
+    const { isAuthenticated, user, token } = useAuthStore()
 
     const goBack = () => navigate('/');
     const goToCreate = () => navigate('/create');
@@ -50,10 +50,13 @@ function Header() {
                 onClick={() => goToCreate()}
                 > Create </button>
 
-                <button className="rounded-full p-1 bg-white items-center cursor-pointer"
-                    onClick={() => setOpenOptions(!openOptions)}
+                <button className="rounded-full bg-white items-center cursor-pointer"
+                    onClick={() => {
+                        setOpenOptions(!openOptions)
+                        console.log(token)
+                    }}
                 >
-                    <img src={user?.avatarUrl ? user.avatarUrl : defaultICon}/>
+                    <img src={user?.avatarUrl ? user.avatarUrl : defaultICon} className="rounded-full w-10 h-10"/>
                 </button>
                 <HeaderOptionsComponent open={openOptions}/>
             </>

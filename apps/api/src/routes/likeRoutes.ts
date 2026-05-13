@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { likePost, unlikePost } from '../controllers/likeController'
 
-const router = Router()
+const router = Router({ mergeParams: true })
+
 
 router.post('/', likePost)
 router.delete('/', unlikePost)

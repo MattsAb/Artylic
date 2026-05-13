@@ -22,7 +22,7 @@ app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/user/:id/follow', authMiddleware, followRoutes)
 
-app.use('/api/v1/post', postRoutes)
+app.use('/api/v1/posts', postRoutes)
 app.use('/api/v1/post/:id/like', authMiddleware, likeRoutes)
 app.use('/api/v1/post/:id/comments', authMiddleware, commentRoutes)
 

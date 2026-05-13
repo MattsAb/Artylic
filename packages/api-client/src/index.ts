@@ -1,3 +1,7 @@
 export * from "./lib/auth-api"
 export * from "./lib/utils/authStore"
 export * from "./lib/profile-api"
+export * from "./lib/posts"
+export * from "./lib/comments"
+export * from "./lib/like"
+export * from "./lib/follow"

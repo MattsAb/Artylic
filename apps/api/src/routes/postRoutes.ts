@@ -1,13 +1,15 @@
 import { Router } from 'express'
 import { createPost, deletePost, getFeed, getPost } from '../controllers/postController'
 import { authMiddleware } from '../middleware/authMIddleware'
+import { upload } from '../config/awss3'
+import { checkLogin } from '../middleware/checkLogin'
 
 const router = Router()
 
 router.get('/', authMiddleware, getFeed)
-router.get('/:id', getPost)
-router.post('/create', authMiddleware, createPost)
-router.delete('/delete/:id', authMiddleware, deletePost)
+router.get('/:id',checkLogin, getPost)
+router.post('/', authMiddleware, upload.single('image'), createPost)
+router.delete('/:id', authMiddleware, deletePost)
 
 
 

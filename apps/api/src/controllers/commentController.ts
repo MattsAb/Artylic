@@ -6,6 +6,9 @@ import { ApiError } from '../types/errorTypes';
 export async function createComment (req: Request, res: Response) {
 
     const { body: commentBody }: CreateCommentDto = req.body
+
+    if (!commentBody) return res.status(400).json({ success: false, message: 'Comment body is required' })
+
     const postId = Number(req.params.id);
     const userId = req.user!.id;
 
@@ -14,10 +17,15 @@ export async function createComment (req: Request, res: Response) {
             userId: userId,
             postId: postId,
             body: commentBody
+        },
+        include: {
+        user: {
+            select: { id: true, username: true, avatarUrl: true }
         }
+    }
     })
 
-    return res.status(201).json({success: true, comment}) 
+    return res.status(201).json({success: true, data: comment}) 
 
 }
 

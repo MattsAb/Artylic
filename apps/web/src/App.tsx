@@ -9,7 +9,7 @@ import { check, getMe, useAuthStore } from "@artylic/api-client"
 
 function App() {
   
-const { setAuth, clearAuth, token } = useAuthStore()
+const { setAuth, clearAuth, token, user } = useAuthStore()
 const [loading, setLoading] = useState(true)
 
 useEffect(() => {
@@ -36,7 +36,7 @@ useEffect(() => {
         }
         const result = await check()
         if (result.success && result.data) {
-            setAuth(result.data.user, result.data.token)
+            setAuth(result.data.user, token)
         } else {
             clearAuth()
         }
@@ -47,14 +47,13 @@ useEffect(() => {
 
   return (
     <>
-
       <Header/>
 
       <div className="pt-18 min-h-screen dark:bg-mist-900 text-black dark:text-white">
 
         <Routes>
           <Route path="/" element={<Dashboard/>}/>
-          <Route path="/post" element={<PostPage/>}/>
+          <Route path="/post/:id" element={<PostPage/>}/>
           <Route path="/profile/:id" element={<UserProfile/>}/>
           <Route path="/create" element={<CreatePostPage/>}/>
         </Routes>

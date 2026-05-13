@@ -34,7 +34,7 @@ function SignInModal({open, onClose}: SignInModalProps) {
         }
 
         if (result.success && result.data) {
-            console.log(result.data.user)
+            console.log(result.data.token)
             setAuth(result.data.user, result.data.token);
             onClose();
         } else {

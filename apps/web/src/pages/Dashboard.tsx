@@ -1,39 +1,47 @@
+import type { Post } from "@artylic/types"
 import ImageComponent from "../components/ImageComponent"
-import artImage from "../assets/pexels-diva-30887566.jpg"
-import image2 from "../assets/Watercolor Portraits Painting.jpeg"
-import image3 from "../assets/pexels-optical-chemist-340351297-31374418.jpg"
-import image4 from "../assets/pexels-nicole-avagliano-1132392-16354153.jpg"
-import image5 from "../assets/pexels-nicole-avagliano-1132392-16354192.jpg"
+import { useEffect, useState } from "react"
+import ErrorMessageComponent from "../components/simple_components/ErrorMessageComponent";
+import { getFeed } from "@artylic/api-client";
 
 function Dashboard() {
+
+  const [feed, setFeed] = useState<Post[]>()
+  const [errorMessage, setErrorMessage] = useState(''); 
+
+  useEffect(() => {
+    async function getFeedInfo() {
+      const result = await getFeed() 
+
+      if (result.success && result.data)
+      {
+        setFeed(result.data)
+      } else if (result.error) {
+        setErrorMessage(result.error)
+      }
+    }
+    getFeedInfo();
+      },[])
+
 
   return (
     <div className="">
       <p className="" > Dashboard </p>
       <div className="flex justify-around">
         <div className="flex-1"> some actions </div>
+        
+        <ErrorMessageComponent message={errorMessage}/>
 
         <div className="columns-2 md:columns-3 lg:columns-4 gap-4 w-2/3">
-                    <ImageComponent ImageUrl={artImage}/>
-                    <ImageComponent ImageUrl={image2}/>
-                    <ImageComponent ImageUrl={image3}/>
-                    <ImageComponent ImageUrl={image4}/>
-                    <ImageComponent ImageUrl={image5}/>
-                    <ImageComponent ImageUrl={image3}/>
-                    <ImageComponent ImageUrl={image4}/>
-                    <ImageComponent ImageUrl={artImage}/>
-                    <ImageComponent ImageUrl={image2}/>
-                    <ImageComponent ImageUrl={image5}/>
-                    <ImageComponent ImageUrl={artImage}/>
-                    <ImageComponent ImageUrl={image2}/>
-                    <ImageComponent ImageUrl={image3}/>
-                    <ImageComponent ImageUrl={image4}/>
-                    <ImageComponent ImageUrl={image5}/>
-                    <ImageComponent ImageUrl={image3}/>
-                    <ImageComponent ImageUrl={image4}/>
-                    <ImageComponent ImageUrl={artImage}/>
-                    <ImageComponent ImageUrl={image2}/>
-                    <ImageComponent ImageUrl={image5}/>
+            {feed && feed.map((post) => (
+              <ImageComponent 
+                key={post.id}
+                url={post.photoUrl}
+                id={post.id}
+                username={post.user.username}
+                likes={post._count?.likes || 0}
+              />
+            ))}
         </div>
 
         <div className="flex-1"> other stuff </div>
