@@ -14,3 +14,13 @@ export async function postComment(id: string, comment: string): Promise<ApiRespo
         return handleError(err);
     }
 }
+
+export async function deleteComment(postId: string, commentId: string): Promise<ApiResponse<null>> {
+    try{
+        const response = await api.delete<ApiResponse<null>>(`/v1/post/${postId}/comments/${commentId}`)
+        return response.data
+
+    } catch (err) {
+        return handleError(err);
+    }
+}

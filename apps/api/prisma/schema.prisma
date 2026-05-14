@@ -46,10 +46,10 @@ model Like {
   id Int @id @default(autoincrement())
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   postId Int
-  post   Post @relation(fields: [postId], references: [id])
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
 }
@@ -60,20 +60,20 @@ model Comment {
   createdAt DateTime @default(now())
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   postId Int
-  post   Post @relation(fields: [postId], references: [id])
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Follow {
   id Int @id @default(autoincrement())
 
   followerId Int
-  follower   User @relation("UserFollowing", fields: [followerId], references: [id])
+  follower   User @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
 
   followedId Int
-  followed   User @relation("UserFollowers", fields: [followedId], references: [id])
+  followed   User @relation("UserFollowers", fields: [followedId], references: [id], onDelete: Cascade)
 
   @@unique([followerId, followedId])
 }

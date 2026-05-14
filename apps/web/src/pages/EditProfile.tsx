@@ -4,6 +4,7 @@ import type { Profile } from "../../../../packages/types/src/lib/profile";
 import SimpleButton from "../components/simple_components/SimpleButton";
 import ErrorMessageComponent from "../components/simple_components/ErrorMessageComponent";
 import { useNavigate } from "react-router-dom";
+import defaultIcon from "../assets/new_artylic_user_Icon.png"
 
 
 function EditProfile () {
@@ -57,34 +58,38 @@ function EditProfile () {
 }
 
     return (
-        <div className="dark:bg-mist-800 w-1/2 justify-center flex ml-20 mt-20 flex-col gap-5 p-10 rounded-xl">
-            <div className="flex gap-5 items-center">
+        <div className="w-full h-full justify-center flex items-center">
+            <div className=" w-3/4 h-full lg:border-x dark:border-mist-700 lg:px-10">
+                <div className="dark:bg-mist-800 justify-center flex mt-20 flex-col gap-5 p-10 rounded-xl">
+                    <div className="flex gap-5 items-center">
 
-                <img className="w-25 h-25 rounded-full" src={preview ? preview : avatar}/>
+                        <img className="w-25 h-25 rounded-full" src={preview ? preview : avatar || defaultIcon}/>
 
-                <input
-                    ref={fileInputRef}
-                    className="hidden"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                />
-                <div className="flex flex-col gap-4">
-                    <h1 className="text-2xl font-bold"> {profile?.username} </h1>
-                    <SimpleButton label="Change Avatar" onClick={() => fileInputRef.current?.click()}/>
+                        <input
+                            ref={fileInputRef}
+                            className="hidden"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                        />
+                        <div className="flex flex-col gap-4">
+                            <h1 className="text-2xl font-bold"> {profile?.username} </h1>
+                            <SimpleButton label="Change Avatar" onClick={() => fileInputRef.current?.click()}/>
+                        </div>
+
+                    </div>
+                    <textarea 
+                        placeholder="description"
+                        rows={2} 
+                        className="w-full p-3 border-b dark:border-mist-700 resize-none"
+                        value={bio}
+                        onChange={e => setBio(e.target.value)}
+                    />
+                    <ErrorMessageComponent message={errorMessage}/>
+                    <div className="flex self-end">
+                        <SimpleButton label="Update" onClick={() => handleEdit()}/>
+                    </div>
                 </div>
-
-            </div>
-            <textarea 
-                placeholder="description"
-                rows={2} 
-                className="w-full p-3 border-b dark:border-mist-700 resize-none"
-                value={bio}
-                onChange={e => setBio(e.target.value)}
-            />
-            <ErrorMessageComponent message={errorMessage}/>
-            <div className="flex self-end">
-                <SimpleButton label="Update" onClick={() => handleEdit()}/>
             </div>
         </div>
     )

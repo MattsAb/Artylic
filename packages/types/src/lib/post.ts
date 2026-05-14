@@ -1,5 +1,5 @@
-import { Comment } from './comment.js'
-import { Like } from './like.js'
+import type { Comment } from './comment.js'
+import type { Like } from './like.js'
 import type { User } from './user.js'
 
 export interface Post {

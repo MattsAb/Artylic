@@ -2,6 +2,8 @@ import { Request, Response } from 'express'
 import { prisma } from '../config/prisma'
 import { CreatePostDto } from '@artylic/types'
 import { ApiError } from '../types/errorTypes'
+import { DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { s3 } from '../config/awss3'
 
 export async function createPost(req: Request, res: Response) {
     const body: CreatePostDto = req.body
@@ -55,16 +57,52 @@ export async function deletePost(req: Request, res: Response) {
     const postId = Number(req.params.id)
     const userId = req.user!.id
 
+    const post = await prisma.post.findUnique({ where: { id: postId } })
 
-    const result = await prisma.post.deleteMany({
-        where: {
-            id: postId,
-            userId: userId
-        }
-    })
-    if (result.count === 0) throw new ApiError(403, 'Forbidden')
+    if (!post) throw new ApiError(404, 'Post not found')
+    if (post.userId !== userId) throw new ApiError(403, 'Forbidden')
+
+
+    const key = post.photoUrl.split('.amazonaws.com/')[1]
+    await s3.send(new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Key: key
+    }))
+
+
+    await prisma.post.delete({ where: { id: postId } })
 
     return res.status(200).json({ success: true })
+}
+
+export async function editPost(req: Request, res: Response) {
+    const postId = Number(req.params.id)
+    const userId = req.user!.id
+    const file = req.file as Express.MulterS3.File | undefined
+
+    const post = await prisma.post.findUnique({ where: { id: postId } })
+
+    if (!post) throw new ApiError(404, 'Post not found')
+
+    if (post.userId !== userId) throw new ApiError(403, 'Forbidden')
+
+    if (file && post.photoUrl) {
+        const key = post.photoUrl.split('.amazonaws.com/')[1]
+        await s3.send(new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Key: key
+        }))
+    }
+
+    const updatedPost = await prisma.post.update({
+        where: { id: postId },
+        data: {
+            ...(req.body.description !== undefined && { description: req.body.description }),
+            ...(file && { photoUrl: file.location }),
+        }
+    })
+
+    return res.status(200).json({ success: true, data: updatedPost })
 }
 
 export async function getFeed(req: Request, res: Response) {

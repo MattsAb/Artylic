@@ -30,7 +30,6 @@ export async function registerUser  (req: Request, res: Response) {
                 username, 
                 password: hashed, 
                 provider: 'local', 
-                avatarUrl: 'https://artylicpostimages-227655493868-eu-north-1-an.s3.eu-north-1.amazonaws.com/posts/icons8-male-user-30.png'
             }
         })
 

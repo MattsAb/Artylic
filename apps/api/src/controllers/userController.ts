@@ -2,6 +2,8 @@ import { Request, Response } from 'express'
 import { prisma } from '../config/prisma'
 import { UpdateUserDto } from '@artylic/types'
 import { ApiError } from '../types/errorTypes'
+import { s3 } from '../config/awss3';
+import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 export async function getProfile(req: Request, res: Response) {
     const profileId = Number(req.params.id);
@@ -47,7 +49,20 @@ export async function updateProfile(req: Request, res: Response) {
     const userId = req.user!.id
     const body: UpdateUserDto = req.body
     const file = req.file as Express.MulterS3.File | undefined
-    console.log('hey')
+
+    const user = await prisma.user.findUnique({
+        where: {id: userId}
+    })
+
+    if (!user) throw new ApiError(403, 'Forbidden')
+    
+    if (file && user.avatarUrl) {
+            const key = user.avatarUrl.split('.amazonaws.com/')[1]
+            await s3.send(new DeleteObjectCommand({
+                Bucket: process.env.AWS_BUCKET_NAME!,
+                Key: key
+            }))
+        }
 
     const profile = await prisma.user.update({
         where: { id: userId },
@@ -65,4 +80,33 @@ export async function updateProfile(req: Request, res: Response) {
     })
 
     return res.status(200).json({ success: true, data: profile })
+}
+
+export async function getSearchUsers(req: Request, res: Response) {
+    const query = req.query.q as string
+
+    if (!query) return res.status(400).json({ success: false, message: 'Query is required' })
+
+    const users = await prisma.user.findMany({
+        where: {
+            username: {
+                contains: query,
+                mode: 'insensitive'
+            }
+        },
+        select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+            bio: true,
+            _count: {
+                select: {
+                    posts: true,
+                    followers: true,
+                }
+            }
+        },
+    })
+
+    return res.status(200).json({ success: true, data: users })
 }

@@ -7,10 +7,14 @@ import CreatePostPage from "./pages/CreatePostPage"
 import { useEffect, useState } from "react"
 import { check, getMe, useAuthStore } from "@artylic/api-client"
 import EditProfile from "./pages/EditProfile"
+import Sidebar from "./components/sidebar_components/Sidebar"
+import EditPost from "./pages/EditPost"
+import SearchPage from "./pages/SearchPage"
 
 function App() {
   
 const { setAuth, clearAuth, token, user } = useAuthStore()
+const [sidebarOpen, setSideBarOpen] = useState(false);
 const [loading, setLoading] = useState(true)
 
 useEffect(() => {
@@ -48,17 +52,21 @@ useEffect(() => {
 
   return (
     <>
-      <Header/>
+      <Header setSidebarOpen={() => setSideBarOpen(!sidebarOpen)}/>
 
-      <div className="pt-18 min-h-screen dark:bg-mist-900 text-black dark:text-white">
-
-        <Routes>
-            <Route path="/" element={<Dashboard/>}/>
-            <Route path="/post/:id" element={<PostPage/>}/>
-            <Route path="/profile/:id" element={<UserProfile/>}/>
-            <Route path="/profile/edit" element={<EditProfile/>}/>
-            <Route path="/create" element={<CreatePostPage/>}/>
-        </Routes>
+      <div className="flex min-h-screen dark:bg-mist-900 text-black dark:text-white">
+        <Sidebar isOpen={sidebarOpen}/>
+        <div className="flex-1 pt-14">
+            <Routes>
+                <Route path="/" element={<Dashboard/>}/>
+                <Route path="/post/:id" element={<PostPage/>}/>
+                <Route path="/post/:id/edit" element={<EditPost/>}/>
+                <Route path="/profile/:id" element={<UserProfile/>}/>
+                <Route path="/profile/edit" element={<EditProfile/>}/>
+                <Route path="/create" element={<CreatePostPage/>}/>
+                <Route path="/search" element={<SearchPage/>}/>
+            </Routes>
+        </div>
         
       </div>
     </>

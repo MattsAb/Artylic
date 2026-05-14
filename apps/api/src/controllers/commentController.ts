@@ -33,14 +33,22 @@ export async function deleteComment(req: Request, res: Response) {
     const commentId = Number(req.params.commentId)
     const userId = req.user!.id
 
-    const comment = await prisma.comment.deleteMany({
-        where: {
-            id: commentId,
-            userId: userId
-        }
+    const comment = await prisma.comment.findUnique({
+        where: { id: commentId },
+        include: { post: true }
     })
 
-    if (comment.count === 0) throw new ApiError(403, 'Forbidden');
+    if (!comment) throw new ApiError(404, 'Comment not found')
+
+
+    const isCommentOwner = comment.userId === userId
+    const isPostOwner = comment.post.userId === userId
+
+    if (!isCommentOwner && !isPostOwner) throw new ApiError(403, 'Forbidden')
+
+    await prisma.comment.delete({
+        where: { id: commentId }
+    })
 
     return res.status(200).json({ success: true })
 }

@@ -1,17 +1,58 @@
+import { useState } from "react";
+import ErrorMessageComponent from "./simple_components/ErrorMessageComponent";
+import { deleteComment } from "@artylic/api-client";
+import DeleteButton from "./simple_components/DeleteButton";
+import defaultIcon from '../assets/new_artylic_user_Icon.png'
 
 type CommentComponentProps = {
     username: string
     body: string
+    avatar: string,
+    ids: [number, number];
+    userId?: number;
+    postId: number;
+    id: number;
 }
 
-function CommentComponent({username, body}: CommentComponentProps) {
+function CommentComponent({username, body, avatar, ids, userId, postId, id}: CommentComponentProps) {
+
+    const [isVisible, setIsVisible] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const canDelete = ids.some((id) => id == userId);
+
+    if (!isVisible) return null;
+
+    async function handleDelete() {
+        const result = await deleteComment(`${postId}`, `${id}`);
+        if (result.success) {
+            setIsVisible(false);
+        } else if (result.error) {
+            setErrorMessage(result.error);
+        }
+    }
+
     return (
-        <div className="p-8 rounded-xl flex gap-4">
-            <div className="rounded-full bg-slate-400 w-10 h-10"/>
-            <div className="flex flex-col gap-3">
-                <h1 className="font-bold"> {username} </h1>
-                <p> {body} </p>
+        <div className="flex justify-between items-center">
+            <div className="p-8 rounded-xl flex gap-4">
+                <img 
+                    className="rounded-full w-10 h-10"
+                    src={avatar ? avatar : defaultIcon}
+                />
+                <div className="flex flex-col gap-3">
+                    <h1 className="font-bold"> {username} </h1>
+                    <p> {body} </p>
+                </div>
             </div>
+            {canDelete &&
+                <div className="mr-10 flex gap-5 items-center">
+                    <ErrorMessageComponent message={errorMessage}/>
+                    <DeleteButton 
+                        label="Delete"
+                        onDelete={() => handleDelete()}
+                    />
+                </div>
+            }
         </div>
     )
 }

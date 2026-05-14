@@ -37,42 +37,44 @@ function CreatePostPage () {
     }
 
     return (
-        <div className="ml-18">
-            <div className="dark:bg-mist-800 mx-18 w-1/2 rounded-2xl p-10 flex flex-col gap-10">
-                <h1 className="font-bold text-2xl"> Create your post </h1>
-                    <div className="flex flex-col mt-10 gap-5">
-                          <>
-                            <input
-                                ref={fileInputRef}
-                                className="hidden"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
+        <div className="w-full flex justify-center h-full">
+            <div className="h-full lg:w-2/3 w-full flex justify-center px-10 border-x dark:border-mist-700">
+                <div className="dark:bg-mist-800 w-full rounded-2xl p-10 flex flex-col gap-10 mt-10">
+                    <h1 className="font-bold text-2xl"> Create your post </h1>
+                        <div className="flex flex-col mt-10 gap-5">
+                            <>
+                                <input
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                />
+                                <button
+                                    className="bg-blue-500 active:bg-blue-400 py-3 self-start px-4 rounded-xl cursor-pointer"
+                                    onClick={() => fileInputRef.current?.click()}
+                                > Upload image </button>
+                                {imageFile && <img src={preview} className="w-full object-contain max-h-150 bg-mist-900" />}
+                            </>
+                        </div>
+                        <div className="">
+                            <h2 className="text-xl"> Description </h2>
+                            <textarea 
+                                placeholder="description"
+                                rows={2} 
+                                className="w-full p-3 border-b dark:border-mist-700 resize-none"
+                                value={description}
+                                onChange={e => setDescrition(e.target.value)}
                             />
-                            <button
-                                className="bg-blue-500 active:bg-blue-400 py-3 self-start px-4 rounded-xl cursor-pointer"
-                                onClick={() => fileInputRef.current?.click()}
-                            > Upload image </button>
-                            {imageFile && <img src={preview} className="w-full object-contain max-h-150" />}
-                        </>
-                    </div>
-                    <div className="">
-                        <h2 className="text-xl"> Description </h2>
-                        <textarea 
-                            placeholder="description"
-                            rows={2} 
-                            className="w-full p-3 border-b dark:border-mist-700 resize-none"
-                            value={description}
-                            onChange={e => setDescrition(e.target.value)}
-                        />
 
-                    </div>
+                        </div>
 
-                    <ErrorMessageComponent message={errorMessage}/>
+                        <ErrorMessageComponent message={errorMessage}/>
 
-                    <div className="flex self-end ">
-                        <SimpleButton label="Create" onClick={() => handleSubmit()}/>
-                    </div>
+                        <div className="flex self-end ">
+                            <SimpleButton label="Create" onClick={() => handleSubmit()}/>
+                        </div>
+                </div>
             </div>
         </div>
     )

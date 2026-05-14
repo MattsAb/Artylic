@@ -7,6 +7,10 @@ export interface User {
     avatarUrl?: string | null
     provider: string
     createdAt: string
+    _count?: {
+        followers: number
+        posts: number
+    }
 }
 
 export interface UpdateUserDto {
