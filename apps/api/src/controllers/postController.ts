@@ -126,10 +126,22 @@ export async function getFeed(req: Request, res: Response) {
         where: { followerId: userId },
         select: { followedId: true }
     })
-
-    if (!following)
+    
+    if (!following.length)
     {
-        return res.status(200).json({success: true, data: []})
+        const posts = await prisma.post.findMany({
+            take: 20,
+            include: {
+                _count: {
+                    select: {likes: true}
+                },
+                user: {
+                    select: {username: true}
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        })
+        return res.status(200).json({success: true, data: posts})
     }
 
     const followingIds = following.map(f => f.followedId)

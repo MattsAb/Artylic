@@ -37,6 +37,7 @@ function PostPage () {
                 return;
             }
             setIsLiked(false)
+            setCanEdit(false)
             const result = await getPost(id);
             if (result.success && result.data) {
                 setPostInfo(result.data.post)
@@ -100,7 +101,7 @@ function PostPage () {
         <div className="flex shadow-2xl mt-10 dark:shadow-none">
             <div className="flex-3 px-10">
                 <div className="p-10 dark:bg-mist-800 rounded-2xl flex flex-col gap-3"> 
-                    <img src={postInfo?.photoUrl} className="w-full object-contain max-h-200 rounded dark:bg-mist-900" />
+                    <img src={postInfo?.photoUrl} className="w-full object-contain max-h-200 rounded dark:bg-mist-900 bg-mist-200" />
                     <ErrorMessageComponent message={errorMessage}/>
                     <div className="flex items-center gap-3">
 

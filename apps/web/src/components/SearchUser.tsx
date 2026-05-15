@@ -17,7 +17,7 @@ function SearchUser ({username, id, postCount, followerCount, avatar}: SreachUse
 
     return (
         <button 
-            className="flex dark: bg-mist-800 px-10 py-5 rounded-2xl cursor-pointer items-center gap-10 text-left"
+            className="flex dark: dark:bg-mist-800 dark:shadow-black bg-gray-100 shadow-gray-400 px-10 py-5 rounded-2xl cursor-pointer items-center gap-10 text-left"
             onClick={() => goToProfile()}
         >
             <img 

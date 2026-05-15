@@ -30,7 +30,7 @@ function LikedPosts () {
     return (
         <div className="w-full flex justify-center">
             <div className="w-2/3 p-10 px-10 border-x border-mist-700">
-                <h1 className="text-2xl font-bold mb-5"> Your Liked Posts </h1>
+                <h1 className="text-2xl mb-5"> {likedPosts?.length ? "Your Liked Posts" : "No liked posts"} </h1>
                 <div className="break-inside-avoid columns-1 lg:columns-2 gap-4">
                     <ErrorMessageComponent message={errorMessage}/>
                     {likedPosts && (

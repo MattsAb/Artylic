@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import SimpleButton from "../components/simple_components/SimpleButton";
-//import { createPost, useAuthStore } from "@artylic/api-client";
 import ErrorMessageComponent from "../components/simple_components/ErrorMessageComponent";
 import {  useNavigate, useParams } from "react-router-dom";
-import { deletePost, editPost, getPost, useAuthStore } from "@artylic/api-client";
+import { deletePost, editPost, getPost,  } from "@artylic/api-client";
 import type { Post } from "@artylic/types";
 import DeleteButton from "../components/simple_components/DeleteButton";
 
@@ -88,10 +87,10 @@ function EditPost () {
                                 onChange={handleFileChange}
                             />
                             <button
-                                className="bg-blue-500 active:bg-blue-400 py-3 self-start px-4 rounded-xl cursor-pointer"
+                                className="bg-blue-500 active:bg-blue-400 text-white py-3 self-start px-4 rounded-xl cursor-pointer"
                                 onClick={() => fileInputRef.current?.click()}
                             > Change image </button>
-                            {<img src={preview ? preview : postInfo?.photoUrl} className="w-full object-contain max-h-150 bg-mist-900" />}
+                            {<img src={preview ? preview : postInfo?.photoUrl} className="w-full object-contain max-h-150 bg-mist-200 dark:bg-mist-900" />}
                         </>
                     </div>
                     <div className="">

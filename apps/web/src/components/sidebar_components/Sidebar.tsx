@@ -42,7 +42,7 @@ function Sidebar({isOpen}: sidebarProps) {
     const goToLikedPosts = () => navigate(`/liked/`) 
 
     return (
-        <div className={`sticky top-0 h-screen pt-14 bg-mist-900 ${isOpen ?`lg:w-70 sm:w-25` : `w-25 `} 
+        <div className={`sticky top-0 h-screen pt-14 dark:bg-mist-900 ${isOpen ?`lg:w-70 sm:w-25` : `w-25 `} 
             z-40 dark:text-white  flex-col items-center gap-3 border-r  border-mist-700
             hidden sm:flex 
             `}>

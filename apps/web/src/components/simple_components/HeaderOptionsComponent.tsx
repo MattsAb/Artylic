@@ -32,11 +32,11 @@ function HeaderOptionsComponent ({open, onClose}: headerOptionsProps) {
 
     return (
         <div 
-            className="absolute top-14 right-4 w-64 dark:bg-mist-800 py-3 px-5 rounded-xl z-50 flex flex-col shadow-2xl"
+            className="absolute top-14 right-4 w-64 dark:bg-mist-800 bg-mist-100 py-3 px-5 rounded-xl z-50 flex flex-col shadow-2xl"
             ref={ref}
         >
             <button 
-                className="hover:dark:bg-mist-700 text-left p-2 rounded-xl cursor-pointer"
+                className="hover:dark:bg-mist-700 hover:bg-mist-200 text-left p-2 rounded-xl cursor-pointer"
                 onClick={() => {
                     goToProfile()
                     onClose()
@@ -44,7 +44,7 @@ function HeaderOptionsComponent ({open, onClose}: headerOptionsProps) {
                 > Profile </button>
 
             <button 
-                className="hover:dark:bg-mist-700 text-left p-2 rounded-xl cursor-pointer"
+                className="hover:dark:bg-mist-700 hover:bg-mist-200  text-left p-2 rounded-xl cursor-pointer"
                 onClick={() => {
                     goToEditProfile()
                     onClose()
@@ -52,7 +52,7 @@ function HeaderOptionsComponent ({open, onClose}: headerOptionsProps) {
             > Edit Profile </button>
             
             <button 
-                className="hover:dark:bg-mist-700 text-left p-2 rounded-xl cursor-pointer mt-5"
+                className="hover:dark:bg-mist-700 hover:bg-mist-200  text-left p-2 rounded-xl cursor-pointer mt-5"
                 onClick={() => {
                     clearAuth()
                     window.location.reload()

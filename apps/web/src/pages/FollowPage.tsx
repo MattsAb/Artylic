@@ -35,7 +35,7 @@ function FollowPage () {
         <div className="flex justify-center mt-5">
             <div className="flex flex-col gap-5 lg:w-1/2 w-full  border-x px-10 border-mist-700">
                 <div className="flex gap-3 text-2xl mt-5">
-                    <h1> fix this page pls </h1>
+                    <h1> {follows?.length ? `People you follow` : "No following users"} </h1>
                 </div>
             
                 <ErrorMessageComponent message={errorMessage}/>

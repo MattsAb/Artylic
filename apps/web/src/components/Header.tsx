@@ -27,13 +27,13 @@ function Header({setSidebarOpen}: headerProps) {
     <div className="fixed left-0 right-0 text-black dark:text-white dark:bg-mist-900 bg-gray-50 h-14 flex z-50 border-b border-mist-700">
         <div className="flex w-full items-center ml-5 gap-4">
             <button 
-                className="hover:bg-mist-700 w-10 h-10 rounded-full p-1 items-center cursor-pointer"
+                className="hover:bg-mist-200 dark:hover:bg-mist-700 w-10 h-10 rounded-full p-1 items-center cursor-pointer"
                 onClick={setSidebarOpen}
             >
                 <Bars3Icon/>
             </button>
             <button 
-            className="font-bold text-2xl cursor-pointer border-b-2 border-rose-800 rounded-xs" 
+            className="font-bold text-2xl cursor-pointer border-b-2 border-rose-700 rounded-xs" 
             onClick={() => goBack()}
             > Artylic </button>
         </div>
@@ -63,7 +63,7 @@ function Header({setSidebarOpen}: headerProps) {
             > Sign In </button> ) : (
             <> 
                 <button
-                    className="font-bold cursor-pointer bg-rose-800 hover:bg-rose-700 px-3 py-1 rounded-2xl flex gap-2 items-center" 
+                    className="font-bold cursor-pointer text-white bg-rose-700 hover:bg-rose-600 px-3 py-1 rounded-2xl flex gap-2 items-center" 
                     onClick={() => goToCreate()}
                 >  
                         <h1> Create  </h1>

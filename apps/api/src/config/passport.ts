@@ -29,7 +29,6 @@ passport.use(new GoogleStrategy({
                     data: {
                         email: profile.emails?.[0].value as string,
                         username: profile.displayName,
-                        avatarUrl: profile.photos?.[0].value,
                         provider: 'google',
                         providerId: profile.id
                     }

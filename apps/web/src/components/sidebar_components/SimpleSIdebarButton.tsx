@@ -12,7 +12,7 @@ function SimpleSidebarButton ({isOpen, handleRedirect, icon: Icon, label}: Sideb
     
     return (
         <button 
-            className={`hover:bg-mist-800 px-5 ${isOpen ? "lg:py-2 py-5" : "py-5"} w-3/4 rounded-2xl cursor-pointer flex gap-3 items-center justify-center`}
+            className={`dark:hover:bg-mist-800 hover:bg-mist-200 px-5 ${isOpen ? "lg:py-2 py-5" : "py-5"} w-3/4 rounded-2xl cursor-pointer flex gap-3 items-center justify-center`}
             onClick={() => handleRedirect()}
         > 
             <Icon className='w-6 h-6'/>

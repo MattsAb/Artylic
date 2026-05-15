@@ -51,10 +51,10 @@ function CreatePostPage () {
                                     onChange={handleFileChange}
                                 />
                                 <button
-                                    className="bg-blue-500 active:bg-blue-400 py-3 self-start px-4 rounded-xl cursor-pointer"
+                                    className="bg-blue-500 active:bg-blue-400 text-white py-3 self-start px-4 rounded-xl cursor-pointer"
                                     onClick={() => fileInputRef.current?.click()}
                                 > Upload image </button>
-                                {imageFile && <img src={preview} className="w-full object-contain max-h-150 bg-mist-900" />}
+                                {imageFile && <img src={preview} className="w-full object-contain max-h-150 dark:bg-mist-900 bg-mist-200" />}
                             </>
                         </div>
                         <div className="">
