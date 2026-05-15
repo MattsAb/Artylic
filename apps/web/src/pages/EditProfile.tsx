@@ -87,7 +87,7 @@ function EditProfile () {
                     />
                     <ErrorMessageComponent message={errorMessage}/>
                     <div className="flex self-end">
-                        <SimpleButton label="Update" onClick={() => handleEdit()}/>
+                        <SimpleButton label="Update" onClick={() => handleEdit()} mode='artylic'/>
                     </div>
                 </div>
             </div>

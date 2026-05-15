@@ -10,6 +10,7 @@ import EditProfile from "./pages/EditProfile"
 import Sidebar from "./components/sidebar_components/Sidebar"
 import EditPost from "./pages/EditPost"
 import SearchPage from "./pages/SearchPage"
+import FollowPage from "./pages/FollowPage"
 
 function App() {
   
@@ -65,6 +66,7 @@ useEffect(() => {
                 <Route path="/profile/edit" element={<EditProfile/>}/>
                 <Route path="/create" element={<CreatePostPage/>}/>
                 <Route path="/search" element={<SearchPage/>}/>
+                <Route path="/follows" element={<FollowPage/>} />
             </Routes>
         </div>
         

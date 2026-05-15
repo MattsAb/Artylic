@@ -47,9 +47,23 @@ export async function getPost(req: Request, res: Response) {
         }
     })
 
+    const count = await prisma.post.count()
+    const skip = Math.floor(Math.random() * Math.max(0, count - 10))
+
+    const otherPosts = await prisma.post.findMany({
+        take: 10,
+        include: {
+            _count: {
+                select: {likes: true}
+            }
+        },
+        skip,
+        orderBy: { createdAt: 'desc' }
+    })
+
     if (!post) throw new ApiError(404, 'Post not found');
 
-    return res.status(200).json({success: true, data: post})
+    return res.status(200).json({success: true, data: {post, otherPosts}})
 
 }
 

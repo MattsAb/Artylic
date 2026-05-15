@@ -16,7 +16,7 @@ function Sidebar({isOpen}: sidebarProps) {
 
     const [follows, setFollows] = useState<Follow[]>()
 
-    const {user} = useAuthStore()
+    const {user, isAuthenticated} = useAuthStore()
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,7 +46,7 @@ function Sidebar({isOpen}: sidebarProps) {
             z-40 dark:text-white  flex-col items-center gap-3 border-r  border-mist-700
             hidden sm:flex 
             `}>
-            <div className='mt-5 items-center flex flex-col w-full'>
+            {isAuthenticated && <div className='mt-5 items-center flex flex-col w-full'>
 
                 <div className='border-b border-mist-700 w-full flex flex-col justify-center items-center gap-3 pb-5'>
                     <SimpleSidebarButton
@@ -72,7 +72,7 @@ function Sidebar({isOpen}: sidebarProps) {
                     />
                 </div>
                 
-            </div>
+            </div>}
 
 
 

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { HandThumbUpIcon } from '@heroicons/react/16/solid';
+import { HandThumbUpIcon } from '@heroicons/react/24/solid';
 
 type ImageComponentProps = {
     url: string,

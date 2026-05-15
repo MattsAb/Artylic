@@ -72,7 +72,11 @@ function CreatePostPage () {
                         <ErrorMessageComponent message={errorMessage}/>
 
                         <div className="flex self-end ">
-                            <SimpleButton label="Create" onClick={() => handleSubmit()}/>
+                            <SimpleButton 
+                                label="Create" 
+                                onClick={() => handleSubmit()}
+                                mode='artylic'
+                            />
                         </div>
                 </div>
             </div>

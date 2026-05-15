@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CommentComponent from "../components/CommentComponent"
-import { HandThumbUpIcon } from '@heroicons/react/16/solid';
+import { HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { HandThumbUpIcon  as HandThumbUpIconOutline} from "@heroicons/react/24/outline";
 
 import SimpleButton from "../components/simple_components/SimpleButton";
 import type { Post } from "@artylic/types";
@@ -8,6 +9,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPost, likePost, postComment, unlikePost, useAuthStore } from "@artylic/api-client";
 import ErrorMessageComponent from "../components/simple_components/ErrorMessageComponent";
 import defaultIcon from '../assets/new_artylic_user_Icon.png'
+import PostSkeleton from "../components/skeleton_components/PostSkeleton";
+import PostImageComponent from "../components/PostImageComponent";
 
 
 
@@ -16,6 +19,7 @@ function PostPage () {
     const [commentMode, setCommentMode] = useState(false);
     const [userComment, setUserComment] = useState('');
     const [postInfo, setPostInfo] = useState<Post>();
+    const [otherPostInfo, setOtherPostInfo] = useState<Post[]>();
     const [postLikes, setPostLikes] = useState<number>(0);
     const [isLiked, setIsLiked] = useState(false);
     const [canEdit, setCanEdit] = useState(false);
@@ -34,24 +38,26 @@ function PostPage () {
             }
             const result = await getPost(id);
             if (result.success && result.data) {
-                console.log(result.data)
-                setPostInfo(result.data)
-                setPostLikes(result.data._count?.likes || 0)
-                if(result.data.likes.length > 0) setIsLiked(true);
-                if (result.data.userId == user?.id) setCanEdit(true);
+                setPostInfo(result.data.post)
+                setOtherPostInfo(result.data.otherPosts || undefined)
+                setPostLikes(result.data.post._count?.likes || 0)
+                if(result.data.post.likes.length > 0) setIsLiked(true);
+                if (result.data.post.userId == user?.id) setCanEdit(true);
 
             } else if (result.error) {
                 setErrorMessage(result.error);
             }
         }
         getInfo();
-    },[])
+    },[id])
 
     async function handleComment() {
         if (userComment == '' || !id) return;
 
         const result = await postComment(id, userComment)
         if (result.success && result.data) {
+            setUserComment('');
+            setCommentMode(false);
             setPostInfo(prev => {
                 if (!prev || !result.data) return prev
                 return {
@@ -84,8 +90,14 @@ function PostPage () {
     const goToProfile = () => navigate(`/profile/${postInfo?.userId}`)
     const goToEdit = () => navigate('edit');
 
+    if (!postInfo) {
+        return (
+            <PostSkeleton/>
+        )
+    }
+
     return (
-        <div className="flex shadow-2xl dark:shadow-none">
+        <div className="flex shadow-2xl mt-10 dark:shadow-none">
             <div className="flex-3 px-10">
                 <div className="p-10 dark:bg-mist-800 rounded-2xl flex flex-col gap-3"> 
                     <img src={postInfo?.photoUrl} className="w-full object-contain max-h-200 rounded dark:bg-mist-900" />
@@ -104,15 +116,13 @@ function PostPage () {
 
                         <h2 className="font-bold text-xl ">{postInfo?.user.username}</h2>
 
-                        <div className="flex gap-3 items-center ml-auto"> 
-                            <button className="dark:bg-mist-700 p-2 rounded-full items-center cursor-pointer"
+                            <button className="dark:bg-mist-700 py-2 px-4 flex gap-3 items-center ml-auto rounded-full cursor-pointer"
                                 onClick={() => handleLike()}
                             >
-                                <HandThumbUpIcon className={`h-6 w-6 ${isLiked && `text-green-500`}`}/> 
+                                {!isLiked ? (<HandThumbUpIconOutline className={`h-6 w-6`}/>) : (<HandThumbUpIcon className={`h-6 w-6`}/> )}
+                                <h2 className="font-bold text-xl">{postLikes}</h2>
                             </button>
 
-                            <h2 className="font-bold text-xl">{postLikes}</h2>
-                        </div>
 
                     </div>
 
@@ -170,7 +180,16 @@ function PostPage () {
                 </div>
             </div>
 
-            <div className="flex-1 hidden lg:flex">
+            <div className="flex-1 hidden lg:flex gap-2 flex-col">
+                <h1 className="font-bold text-2xl mb-5"> Other posts </h1>
+                {otherPostInfo && otherPostInfo.map((otherPost) => (
+                    <PostImageComponent
+                        key={otherPost.id}
+                        url={otherPost.photoUrl}
+                        id={otherPost.id}
+                        likes={otherPost._count?.likes}
+                    />
+                ))}
                 
             </div>
         </div>

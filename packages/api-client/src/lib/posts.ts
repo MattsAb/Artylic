@@ -1,4 +1,4 @@
-import type { ApiResponse, Post } from "@artylic/types"
+import type { ApiResponse, Post, PostPageInfo } from "@artylic/types"
 import { handleError } from "./utils/handleError"
 import api from "./config/axios";
 
@@ -17,9 +17,9 @@ export async function createPost(description: string, imageFile: File): Promise<
     }
 }
 
-export async function getPost(id: string): Promise<ApiResponse<Post>>{
+export async function getPost(id: string): Promise<ApiResponse<PostPageInfo>>{
     try{
-        const response = await api.get<ApiResponse<Post>>(`/v1/posts/${id}`)
+        const response = await api.get<ApiResponse<PostPageInfo>>(`/v1/posts/${id}`)
         return response.data
 
     } catch (err) {

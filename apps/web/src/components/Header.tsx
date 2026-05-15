@@ -1,7 +1,7 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import SignInModal from "./SignInModal"
 import { useNavigate } from "react-router-dom";
-import { MagnifyingGlassIcon, Bars3Icon } from '@heroicons/react/16/solid';
+import { MagnifyingGlassIcon, Bars3Icon, PlusIcon } from '@heroicons/react/16/solid';
 import { useAuthStore } from "@artylic/api-client";
 import defaultICon from '../assets/new_artylic_user_Icon.png';
 import HeaderOptionsComponent from "./simple_components/HeaderOptionsComponent";
@@ -33,7 +33,7 @@ function Header({setSidebarOpen}: headerProps) {
                 <Bars3Icon/>
             </button>
             <button 
-            className="font-bold text-2xl cursor-pointer" 
+            className="font-bold text-2xl cursor-pointer border-b-2 border-rose-800 rounded-xs" 
             onClick={() => goBack()}
             > Artylic </button>
         </div>
@@ -63,9 +63,12 @@ function Header({setSidebarOpen}: headerProps) {
             > Sign In </button> ) : (
             <> 
                 <button
-                    className="font-bold cursor-pointer"
+                    className="font-bold cursor-pointer bg-rose-800 hover:bg-rose-700 px-3 py-1 rounded-2xl flex gap-2 items-center" 
                     onClick={() => goToCreate()}
-                > Create </button>
+                >  
+                        <h1> Create  </h1>
+                        <PlusIcon className="w-6 h-6"/>
+                </button>
 
                 <button className="rounded-full bg-white items-center cursor-pointer"
                     onClick={() => {

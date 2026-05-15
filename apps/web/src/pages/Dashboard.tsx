@@ -3,12 +3,14 @@ import ImageComponent from "../components/ImageComponent"
 import { useEffect, useState } from "react"
 import ErrorMessageComponent from "../components/simple_components/ErrorMessageComponent";
 import { getFeed, useAuthStore } from "@artylic/api-client";
+import ImageSkeleton from "../components/skeleton_components/ImageSKeleton";
 
 function Dashboard() {
 
   const [feed, setFeed] = useState<Post[]>()
   const [errorMessage, setErrorMessage] = useState(''); 
-  const {user} = useAuthStore();
+  const {user, isAuthenticated} = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function getFeedInfo() {
@@ -20,8 +22,8 @@ function Dashboard() {
 
       if (result.success && result.data)
       {
+        setIsLoading(false);
         setFeed(result.data)
-        console.log("feed")
       } else if (result.error) {
         setErrorMessage(result.error)
       }
@@ -36,7 +38,7 @@ function Dashboard() {
         <div className="px-20 pt-10 w-2/3 flex-3">
           <p className="mb-5 text-2xl" > Dashboard </p>
           <ErrorMessageComponent message={errorMessage}/>
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-4">
+          {feed?.length  ? (<div className="columns-2 md:columns-3 lg:columns-4 gap-4">
               {feed && feed.map((post) => (
                 <ImageComponent 
                   key={post.id}
@@ -46,7 +48,7 @@ function Dashboard() {
                   likes={post._count?.likes || 0}
                 />
               ))}
-          </div>
+          </div>) : ( <ImageSkeleton load={isAuthenticated && isLoading}/> )}
 
         </div>
 

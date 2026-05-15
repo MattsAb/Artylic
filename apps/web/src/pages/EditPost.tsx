@@ -5,7 +5,6 @@ import ErrorMessageComponent from "../components/simple_components/ErrorMessageC
 import {  useNavigate, useParams } from "react-router-dom";
 import { deletePost, editPost, getPost, useAuthStore } from "@artylic/api-client";
 import type { Post } from "@artylic/types";
-import CommentComponent from "../components/CommentComponent";
 import DeleteButton from "../components/simple_components/DeleteButton";
 
 function EditPost () {
@@ -14,14 +13,11 @@ function EditPost () {
     const [description, setDescrition] = useState('');
     const [preview, setPreview] = useState('');
     const [postInfo, setPostInfo] = useState<Post>();
-    const [openComments, setOpenComments] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement>(null)
     const navigate = useNavigate();
     const {id} = useParams();
-
-    const {user} = useAuthStore();
 
         useEffect(() => {
     
@@ -32,8 +28,8 @@ function EditPost () {
                 const result = await getPost(id);
                 if (result.success && result.data) {
                     console.log(result.data)
-                    setPostInfo(result.data)
-                    setDescrition(result.data.description)
+                    setPostInfo(result.data.post)
+                    setDescrition(result.data.post.description)
                 } else if (result.error) {
                     setErrorMessage(result.error);
                 }
@@ -113,35 +109,9 @@ function EditPost () {
                     <ErrorMessageComponent message={errorMessage}/>
 
                     <div className="flex self-end ">
-                        <SimpleButton label="Edit post" onClick={() => handleEdit()}/>
+                        <SimpleButton label="Edit post" onClick={() => handleEdit()} mode='artylic'/>
                     </div>
-                    <div>
-                        <div className="flex gap-3">
-                            <h1 className="text-2xl"> Comments </h1>
-                            <SimpleButton label="open" onClick={() => setOpenComments(!openComments)}/>
-                        </div>
-                        {openComments && 
-                        
-                            <div className="mt-10 flex flex-col gap-5 dark:bg-mist-800 rounded-2xl pb-5">
-                                {
-                                    postInfo?.comments && (
-                                        postInfo.comments.map((comment) => (
-                                            <CommentComponent 
-                                                username={comment.user.username}
-                                                body={comment.body}
-                                                key={comment.id}
-                                                avatar={comment.user.avatarUrl ?? ''}
-                                                ids={[comment.userId, postInfo.userId]}
-                                                userId={user?.id}
-                                                id={comment.id}
-                                                postId={comment.postId}
-                                            />
-                                        ))
-                                    )
-                                }
-                            </div>
-                        }
-                    </div>
+
             </div>
         </div>
     )

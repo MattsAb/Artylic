@@ -17,6 +17,11 @@ export interface Post {
     }
 }
 
+export interface PostPageInfo {
+    post: Post 
+    otherPosts: Post[]
+}
+
 export interface CreatePostDto {
     description: string
     photoUrl: string

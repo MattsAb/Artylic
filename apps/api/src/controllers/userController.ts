@@ -4,6 +4,7 @@ import { UpdateUserDto } from '@artylic/types'
 import { ApiError } from '../types/errorTypes'
 import { s3 } from '../config/awss3';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { getUserFollows } from './followController';
 
 export async function getProfile(req: Request, res: Response) {
     const profileId = Number(req.params.id);
