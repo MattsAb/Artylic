@@ -129,15 +129,15 @@ describe('getFeed', () => {
         expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: [post]});
     })
 
-    test('should return status 200 and an empty array if user does not follow anyone', async () => {
-        (prisma.follow.findMany as jest.Mock).mockResolvedValue(null);
+    test('should return status 200 and and posts', async () => {
+        (prisma.follow.findMany as jest.Mock).mockResolvedValue([post]);
 
         await getFeed(mockRequest, mockResponse as Response)
 
-        expect(prisma.post.findMany).not.toHaveBeenCalled();
+        expect(prisma.post.findMany).toHaveBeenCalled();
         expect(prisma.follow.findMany).toHaveBeenCalledTimes(1);
         expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: []});
+        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: [post]});
     })
 
 })
