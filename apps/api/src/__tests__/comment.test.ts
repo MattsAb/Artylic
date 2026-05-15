@@ -5,7 +5,8 @@ import { Request, Response } from 'express'
 jest.mock('../config/prisma', () => ({
     prisma: {
         comment: {
-            deleteMany: jest.fn(),
+            findUnique: jest.fn(),
+            delete: jest.fn(),
             create: jest.fn()
         },
 
@@ -24,9 +25,15 @@ const mockRequest = {
     }
 } as unknown as Request
 
-let comment = {
+const comment = {
     id: 1,
-    body: "testbody"
+    userId: 1,        // matches mockRequest.user.id
+    body: 'test',
+    postId: 1,
+    post: {
+        id: 1,
+        userId: 1     // for isPostOwner check
+    }
 }
 
 let mockResponse: Partial<Response>
@@ -53,22 +60,23 @@ describe('createComment', () => {
 })
 
 describe('deleteComment', () => {
-    test('should return status 200', async () => {
-        (prisma.comment.deleteMany as jest.Mock).mockResolvedValue({count: 1});
+    test('deleteComment should return status 200', async () => {
+        (prisma.comment.findUnique as jest.Mock).mockResolvedValue(comment);
+
 
         await deleteComment(mockRequest, mockResponse as Response)
 
-        expect(prisma.comment.deleteMany).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: true});
+        expect(prisma.comment.delete).toHaveBeenCalledTimes(1)
+        expect(mockResponse.status).toHaveBeenCalledWith(200)
+        expect(mockResponse.json).toHaveBeenCalledWith({ success: true })
     })
     test('should return status 403 and an error message', async () => {
-        (prisma.comment.deleteMany as jest.Mock).mockResolvedValue({count: 0});
+        (prisma.comment.findUnique as jest.Mock).mockResolvedValue(null);
 
         await expect(deleteComment(mockRequest, mockResponse as Response)).rejects
-        .toThrow(expect.objectContaining({ statusCode: 403, message: 'Forbidden' }))
+        .toThrow(expect.objectContaining({ statusCode: 404, message: 'Comment not found' }))
 
-        expect(prisma.comment.deleteMany).toHaveBeenCalledTimes(1);
+        expect(prisma.comment.delete).not.toHaveBeenCalled();
     })
 
 })

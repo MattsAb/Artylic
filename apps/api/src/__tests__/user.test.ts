@@ -11,6 +11,15 @@ jest.mock('../config/prisma', () => ({
     }
 }))
 
+jest.mock('../config/awss3', () => ({
+    s3: {
+        send: jest.fn().mockResolvedValue({})
+    },
+    createUpload: jest.fn(() => ({
+        single: jest.fn(() => (req: any, res: any, next: any) => next())
+    }))
+}))
+
 let profile = {
     id: 1, 
     posts: [{id:1},{id:2}], 
@@ -72,17 +81,17 @@ describe('getProfile', () => {
 describe('updateProfile', () => {
     test('should return status 200 and an updated profile', async () => {
         (prisma.user.update as jest.Mock).mockResolvedValue(updatedProfile);
-
+        (prisma.user.findUnique as jest.Mock).mockResolvedValue(updatedProfile);
         await updateProfile(mockRequest, mockResponse as Response)
 
         expect(prisma.user.update).toHaveBeenCalledTimes(1);
         expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, profile: updatedProfile });
+        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: updatedProfile });
     })
 
 test('should update the logged in user not params user', async () => {
     (prisma.user.update as jest.Mock).mockResolvedValue(updatedProfile);
-
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(updatedProfile);
     await updateProfile(mockRequest, mockResponse as Response)
 
     expect(prisma.user.update).toHaveBeenCalledWith(

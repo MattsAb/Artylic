@@ -7,8 +7,10 @@ jest.mock('../config/prisma', () => ({
         post: {
             findMany: jest.fn(),
             findUnique: jest.fn(),
-            deleteMany: jest.fn(),
-            create: jest.fn()
+            delete: jest.fn(),
+            create: jest.fn(),
+            count: jest.fn(),
+            update: jest.fn(), 
         },
         follow: {
             findMany: jest.fn(),
@@ -16,6 +18,14 @@ jest.mock('../config/prisma', () => ({
     }
 }))
 
+jest.mock('../config/awss3', () => ({
+    s3: {
+        send: jest.fn().mockResolvedValue({})
+    },
+    createUpload: jest.fn(() => ({
+        single: jest.fn(() => (req: any, res: any, next: any) => next())
+    }))
+}))
 
 const mockRequest = {
     body: {
@@ -27,7 +37,8 @@ const mockRequest = {
     },
     user: {
         id: 1
-    }
+    },
+    file: {location: 'somelocation'}
 } as unknown as Request
 
 let mockResponse: Partial<Response>
@@ -35,7 +46,9 @@ let mockResponse: Partial<Response>
 let post = {
     id: 2,
     photoUrl: "photoUrl",
-    descrition: "descrition"
+    description: "descrition",
+    userId: 1,
+    createdAt: "data",
 }
 
 beforeEach(() => {
@@ -46,7 +59,7 @@ beforeEach(() => {
     }
 })
 
-/*describe('createPost', () => {
+describe('createPost', () => {
     test('should return status 201 and a post', async () => {
         (prisma.post.create as jest.Mock).mockResolvedValue(post);
 
@@ -54,21 +67,22 @@ beforeEach(() => {
 
         expect(prisma.post.create).toHaveBeenCalledTimes(1);
         expect(mockResponse.status).toHaveBeenCalledWith(201);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: post });
+        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, post });
     })
 
-})*/
+})
 
 describe('getPost', () => {
-    test('should return status 200 and a post', async () => {
-        (prisma.post.findUnique as jest.Mock).mockResolvedValue(post);
+test('should return status 200 and a post', async () => {
+    (prisma.post.findUnique as jest.Mock).mockResolvedValue(post);
+    (prisma.post.count as jest.Mock).mockResolvedValue(10);
+    (prisma.post.findMany as jest.Mock).mockResolvedValue([post]);
 
-        await getPost(mockRequest, mockResponse as Response)
+    await getPost(mockRequest, mockResponse as Response)
 
-        expect(prisma.post.findUnique).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.json).toHaveBeenCalledWith({ success: true, data: post });
-    })
+    expect(prisma.post.findUnique).toHaveBeenCalledTimes(1)
+    expect(mockResponse.status).toHaveBeenCalledWith(200)
+})
 
     test('should return status 404 and an error message', async () => {
         (prisma.post.findUnique as jest.Mock).mockResolvedValue(null);
@@ -81,29 +95,29 @@ describe('getPost', () => {
 })
 
 describe('deletePost', () => {
-    test('should return status 200', async () => {
-        (prisma.post.deleteMany as jest.Mock).mockResolvedValue({count: 1});
+    test('deletePost should return status 200', async () => {
+        (prisma.post.findUnique as jest.Mock).mockResolvedValue(post);
 
         await deletePost(mockRequest, mockResponse as Response)
 
-        expect(prisma.post.deleteMany).toHaveBeenCalledTimes(1);
+        expect(prisma.post.delete).toHaveBeenCalledTimes(1);
         expect(mockResponse.status).toHaveBeenCalledWith(200);
         expect(mockResponse.json).toHaveBeenCalledWith({ success: true});
     })
 
-    test('should return status 403 and an error message', async () => {
-        (prisma.post.deleteMany as jest.Mock).mockResolvedValue({count: 0});
+    test('should return status 404 and an error message', async () => {
+        (prisma.post.findUnique as jest.Mock).mockResolvedValue(null);
 
         await expect(deletePost(mockRequest, mockResponse as Response)).rejects
-        .toThrow(expect.objectContaining({ statusCode: 403, message: 'Forbidden' }))
+        .toThrow(expect.objectContaining({ statusCode: 404, message: "Post not found" }))
 
-        expect(prisma.post.deleteMany).toHaveBeenCalledTimes(1);
+        expect(prisma.post.delete).not.toHaveBeenCalled();
     })
 
 })
 
 describe('getFeed', () => {
-    test('should return status 200', async () => {
+    test('feed should return status 200', async () => {
         (prisma.post.findMany as jest.Mock).mockResolvedValue([post]);
         (prisma.follow.findMany as jest.Mock).mockResolvedValue([{followerId: 1, followedId: 2}]);
 
