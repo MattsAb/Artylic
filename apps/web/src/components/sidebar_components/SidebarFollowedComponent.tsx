@@ -1,5 +1,5 @@
 import type { Follow } from "@artylic/types"
-import { PaperClipIcon } from "@heroicons/react/16/solid"
+import { BookmarkIcon } from "@heroicons/react/16/solid"
 import defaultIcon from "../../assets/new_artylic_user_Icon.png"
 import { useNavigate } from "react-router-dom"
 
@@ -18,10 +18,10 @@ function SidebarFollowedComponent ({isOpen, follows, handleRedirect}: SidebarFol
     return (
         <>
             <button 
-                className={`hover:bg-mist-800 px-5 py-2 ${ isOpen ? `py-2` : 'py-5'} rounded-2xl  cursor-pointer flex items-center gap-2`}
+                className={`hover:bg-mist-800 justify-center self-center ${ isOpen ? `w-full lg:py-2 py-5` : 'w-3/4 py-5'} rounded-2xl cursor-pointer flex items-center gap-3`}
                 onClick={() => goToFollowers()}
             > 
-                <PaperClipIcon className='w-6 h-6'/>
+                <BookmarkIcon className='w-6 h-6'/>
                 {isOpen && <h1 className="hidden lg:flex">People you follow</h1>}
             </button>
 

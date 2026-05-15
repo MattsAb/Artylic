@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { prisma } from '../config/prisma'
+import { ApiError } from '../types/errorTypes';
 
 export async function likePost (req: Request, res: Response) {
     const postId = Number(req.params.id);
@@ -29,5 +30,30 @@ export async function unlikePost(req: Request, res: Response) {
         }
     })
     return res.status(200).json({ success: true })
+
+}
+
+export async function getLikedPosts(req: Request, res: Response) {
+    const userId = req.user!.id;
+
+
+    const likes = await prisma.like.findMany({
+        where: { userId },
+        include: {
+            post: {
+                include: {
+                    user: true,
+                    _count: {
+                        select: {likes: true}
+                    }
+                }
+            }
+        }
+    })
+    const posts = likes.map(like => like.post)
+
+    if (!posts) throw new ApiError(404, 'Post not found');
+
+    return res.status(200).json({success: true, data: posts})
 
 }

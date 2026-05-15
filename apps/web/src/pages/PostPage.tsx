@@ -36,6 +36,7 @@ function PostPage () {
             if (!id) {
                 return;
             }
+            setIsLiked(false)
             const result = await getPost(id);
             if (result.success && result.data) {
                 setPostInfo(result.data.post)
@@ -53,7 +54,6 @@ function PostPage () {
 
     async function handleComment() {
         if (userComment == '' || !id) return;
-
         const result = await postComment(id, userComment)
         if (result.success && result.data) {
             setUserComment('');
@@ -152,15 +152,14 @@ function PostPage () {
 
                     <div className="mt-10">
 
-                        <div className="flex items-center text-2xl ml-5 gap-3">
+                     <div className="flex items-center text-2xl ml-5 gap-3">
                             <p> {postInfo?._count?.comments}</p>
                             <p> comments </p>
-                        </div>
+                    </div>
 
-                        <div className="mt-10 flex flex-col gap-5 dark:bg-mist-800 rounded-2xl pb-5">
-                            {
-                                postInfo?.comments && (
-                                    postInfo.comments.map((comment) => (
+                        {postInfo?.comments.length !== 0 && ( <div className="mt-10 flex flex-col gap-5 dark:bg-mist-800 rounded-2xl pb-5">
+                            
+                                    {postInfo.comments.map((comment) => (
                                         <CommentComponent 
                                             username={comment.user.username}
                                             body={comment.body}
@@ -171,10 +170,8 @@ function PostPage () {
                                             id={comment.id}
                                             postId={comment.postId}
                                         />
-                                    ))
-                                )
-                            }
-                        </div>
+                                    ))}
+                        </div>)}
                     </div>
                     
                 </div>

@@ -42,6 +42,10 @@ export async function getUserFollows(req: Request, res: Response) {
                 select: {
                     avatarUrl: true,
                     username: true,
+                    id: true,
+                    _count: {
+                        select: {posts: true, followers: true}
+                    }
                 }
             }
         }

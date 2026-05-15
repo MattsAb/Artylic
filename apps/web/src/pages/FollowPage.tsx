@@ -43,7 +43,7 @@ function FollowPage () {
                 {follows && follows.map((user) => (
                     <SearchUser
                         key={user.id}
-                        id={user.id}
+                        id={user.followed.id}
                         username={user.followed.username}
                         avatar={user.followed.avatarUrl || undefined}
                         postCount={user.followed._count?.posts|| 0}

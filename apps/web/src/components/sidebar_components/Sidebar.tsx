@@ -30,7 +30,6 @@ function Sidebar({isOpen}: sidebarProps) {
             if(result.success && result.data)
             {
                 setFollows(result.data);
-                console.log('ay')
             } else if (result.error) {
                 console.log('failed to fetch follows')
             }
@@ -40,9 +39,10 @@ function Sidebar({isOpen}: sidebarProps) {
 
     const goToFollow = (id: number) => navigate(`/profile/${id}`)
     const goToProfile = () => navigate(`/profile/${user?.id}`) 
+    const goToLikedPosts = () => navigate(`/liked/`) 
 
     return (
-        <div className={`sticky top-0 h-screen pt-14 bg-mist-900 ${isOpen ?`lg:w-70 md:w-25` : `w-25 `} 
+        <div className={`sticky top-0 h-screen pt-14 bg-mist-900 ${isOpen ?`lg:w-70 sm:w-25` : `w-25 `} 
             z-40 dark:text-white  flex-col items-center gap-3 border-r  border-mist-700
             hidden sm:flex 
             `}>
@@ -58,13 +58,13 @@ function Sidebar({isOpen}: sidebarProps) {
                     <SimpleSidebarButton
                         label='Liked posts'
                         icon={HandThumbUpIcon}
-                        handleRedirect={() => goToProfile()}
+                        handleRedirect={() => goToLikedPosts()}
                         isOpen={isOpen}
                     />
                 </div>
 
 
-                <div className='p-5 w-full flex justify-baseline flex-col border-b dark:border-mist-700'>
+                <div className={`${isOpen ? 'p-5' : 'py-5'} w-full flex justify-baseline flex-col border-b dark:border-mist-700`}>
                     <SidebarFollowedComponent
                         isOpen={isOpen}
                         follows={follows ? follows : []}

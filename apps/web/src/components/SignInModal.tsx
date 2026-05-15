@@ -34,13 +34,14 @@ function SignInModal({open, onClose}: SignInModalProps) {
         }
 
         if (result.success && result.data) {
-            console.log(result.data.token)
             setAuth(result.data.user, result.data.token);
+            setEmail('');
+            setUsername('');
+            setPassword('');
             onClose();
         } else {
             if (result.error)
             {
-                console.log(result.error)
                 setErrorMessage(result.error)
             }
         }

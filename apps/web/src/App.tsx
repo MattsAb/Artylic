@@ -11,10 +11,11 @@ import Sidebar from "./components/sidebar_components/Sidebar"
 import EditPost from "./pages/EditPost"
 import SearchPage from "./pages/SearchPage"
 import FollowPage from "./pages/FollowPage"
+import LikedPosts from "./pages/LikedPosts"
 
 function App() {
   
-const { setAuth, clearAuth, token, user } = useAuthStore()
+const { setAuth, clearAuth, token } = useAuthStore()
 const [sidebarOpen, setSideBarOpen] = useState(false);
 const [loading, setLoading] = useState(true)
 
@@ -67,6 +68,7 @@ useEffect(() => {
                 <Route path="/create" element={<CreatePostPage/>}/>
                 <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/follows" element={<FollowPage/>} />
+                <Route path="/liked" element={<LikedPosts/>} />
             </Routes>
         </div>
         
