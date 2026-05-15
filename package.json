@@ -4,7 +4,6 @@
   "workspaces": [
     "apps/api",
     "apps/web",
-    "apps/mobile",
     "packages/shared_logic",
     "packages/types",
     "packages/api-client"
