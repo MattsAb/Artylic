@@ -37,7 +37,8 @@ function Dashboard() {
     <div className="">
       <div className="flex justify-around">
         <div className="px-20 pt-10 w-2/3 flex-3">
-          <p className="mb-5 text-2xl" > Dashboard </p>
+          <p 
+          className="mb-5 text-2xl" > Dashboard </p>
           <ErrorMessageComponent message={errorMessage}/>
           {feed?.length  ? (<div className="columns-2 md:columns-3 lg:columns-4 gap-4">
               {feed && feed.map((post) => (

@@ -74,11 +74,12 @@ function Header({setSidebarOpen}: headerProps) {
                     onClick={() => {
                         setOpenOptions(!openOptions)
                     }}
+                    data-testid="userAvatar"
                 >
                     <img src={user?.avatarUrl ? user.avatarUrl : defaultICon} className="rounded-full w-10 h-10"/>
                 </button>
 
-                <HeaderOptionsComponent 
+                <HeaderOptionsComponent
                     onClose={() => setOpenOptions(false)}
                     open={openOptions}
                 />

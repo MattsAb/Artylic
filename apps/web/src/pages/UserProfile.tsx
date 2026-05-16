@@ -67,7 +67,10 @@ function UserProfile () {
     }
 
     return (
-        <div className="w-full flex flex-col">
+        <div 
+            className="w-full flex flex-col"
+            data-testId="userProfile"
+            >
             
             <div className="w-full dark:bg-mist-800 py-15 flex gap-10 shadow-2xl">
                 {profile ? (<> <img src={profile?.avatarUrl ? profile.avatarUrl : defaultIcon} className="w-30 h-30 rounded-full ml-18"/>

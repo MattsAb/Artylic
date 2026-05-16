@@ -7,7 +7,9 @@ function ErrorMessageComponent ({message}: ErrorMessageProps) {
     if (message == '') return null;
 
     return (
-        <div className="text-red-500">
+        <div 
+            data-testId='errorMessage'
+            className="text-red-500">
             <p> {message} </p>
         </div>
     )

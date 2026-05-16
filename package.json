@@ -12,7 +12,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test --workspaces --if-present"
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e -w apps/web",
+    "test:all": "npm run test && npm run test:e2e"
   },
   "keywords": [],
   "author": "",
